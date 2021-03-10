@@ -1,31 +1,36 @@
 import { useKeycloak } from "@react-keycloak/web";
-import React, { useState } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Nav, Container, Row, Col } from "react-bootstrap";
 
+import AppContext from "../context/AppContext";
+
 const NavBar = (props) => {
   const [selectedTab, setSelectedTab] = useState("/");
-  const { user } = props;
-
   const { keycloak, initialized } = useKeycloak();
-
+  const { user } = useContext(AppContext);
   const { authenticated } = keycloak;
 
   const renderAuthLinks = () => {
-    console.log("Render auth links - initialized:", initialized, ", authenticated: ", authenticated);
-  
+    console.log(
+      "Render auth links - initialized:",
+      initialized,
+      ", authenticated: ",
+      authenticated
+    );
+
     if (authenticated) {
       return (
-        <Row>
+        <Row noGutters>
           <Col md={1} lg={1} xl={1}>
-            <Nav.Item style={{textAlign:"left"}}>
+            <Nav.Item style={{ textAlign: "left" }}>
               <Nav.Link eventKey="/" href="/" as="div">
                 <Link to="/">Home</Link>
               </Nav.Link>
             </Nav.Item>
           </Col>
           <Col md={6} lg={6} xl={6}>
-            <Nav.Item style={{textAlign:"left"}}>
+            <Nav.Item style={{ textAlign: "left" }}>
               <Nav.Link eventKey="/posts" href="/posts" as="div">
                 <Link to="/posts">Posts</Link>
               </Nav.Link>
@@ -40,7 +45,7 @@ const NavBar = (props) => {
           </Col>
           <Col md={1} lg={2} xl={2}>
             <Nav.Item>
-              <Nav.Link eventKey="/logoff" href="#" onClick={logout}  as="div">
+              <Nav.Link eventKey="/logoff" href="#" onClick={logout} as="div">
                 <Link to="/logoff">Logout</Link>
               </Nav.Link>
             </Nav.Item>
@@ -50,9 +55,9 @@ const NavBar = (props) => {
     }
 
     return (
-      <Row>
+      <Row noGutters>
         <Col md={10} lg={10} xl={10}>
-          <Nav.Item style={{textAlign:"left"}}>
+          <Nav.Item style={{ textAlign: "left" }}>
             <Nav.Link eventKey="/" as="div">
               <Link to="/">Home</Link>
             </Nav.Link>
@@ -97,12 +102,9 @@ const NavBar = (props) => {
       defaultActiveKey="/"
       activeKey={selectedTab}
       onSelect={selectTab}
-      style={{backgroundColor:"cyan"}}
-      
+      style={{ backgroundColor: "cyan" }}
     >
-      <Container>
-      {links}        
-      </Container>
+      <Container>{links}</Container>
     </Nav>
   );
 };

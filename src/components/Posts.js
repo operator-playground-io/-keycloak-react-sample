@@ -1,60 +1,39 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect, useContext } from "react";
 import { useKeycloak } from "@react-keycloak/web";
 import Card from "react-bootstrap/Card";
 
-const Posts = (props) => {
-  const [postList, setPostList] = useState();
-  const { keycloak, initialized } = useKeycloak();
+import AppContext from "../context/AppContext";
 
+const Posts = (props) => {
+  const { keycloak, initialized } = useKeycloak();
+  const appContext = useContext(AppContext);
+  const { messages, getMessages, loading } = appContext;
   const { authenticated } = keycloak;
-  const {token} = props;
 
   useEffect(
-    () => getPosts(),
+    () => getMessages(),
     // eslint-disable-next-line
-    [initialized, authenticated, token]
+    []
   );
 
-  const getPosts = async () => {
-    console.log("Get posts...initialized:", initialized, ", authenticated: ", authenticated, ", token: ", token);
-
-    setPostList([]);
-
-    if (! initialized || !authenticated || ! token || token === "") {
-      return;
-    }
-
-    try {
-      console.log(
-        "Retrieve posts .."
-      );
-      const response = await axios.get(
-        "https://jsonplaceholder.typicode.com/users/1/posts"
-      );
-      const data = response.data;
-      console.log('Data is:', data);
-
-      setPostList(data);
-    } catch (error) {
-      console.log("Failed to retrieve the posts. error: ", error);
-    }
-  };
-
   console.log("initialized:", initialized, ", authenticated: ", authenticated);
-  console.log("Posts: ", postList);
+  console.log("Posts: ", messages);
 
   if (!authenticated) {
     return <div>You don't have access to this page</div>;
   }
 
-  if (!postList || postList.length === 0) {
+  if ( loading ) {
+    return <div>Loading posts...</div>;
+  }
+
+  if (!messages || messages.length === 0) {
     return <div>No post was found.</div>;
   }
 
   return (
     <div>
-      {postList.map((post) => (
+      {messages.map((post) => (
         <Card bg="light" key={post.id}>
           <Card.Body>
             <Card.Title>{post.title}</Card.Title>
