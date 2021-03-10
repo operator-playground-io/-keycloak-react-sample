@@ -13,11 +13,11 @@ const Posts = (props) => {
   useEffect(
     () => getPosts(),
     // eslint-disable-next-line
-    []
+    [initialized, authenticated, token]
   );
 
   const getPosts = async () => {
-    console.log("Get posts...");
+    console.log("Get posts...initialized:", initialized, ", authenticated: ", authenticated, ", token: ", token);
 
     setPostList([]);
 
@@ -26,9 +26,9 @@ const Posts = (props) => {
     }
 
     try {
-      // console.log(
-      //   "Get posts from https://jsonplaceholder.typicode.com/users/1/posts"
-      // );
+      console.log(
+        "Retrieve posts .."
+      );
       const response = await axios.get(
         "https://jsonplaceholder.typicode.com/users/1/posts"
       );
