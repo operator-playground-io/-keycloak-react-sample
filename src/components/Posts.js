@@ -8,6 +8,7 @@ const Posts = (props) => {
   const { keycloak, initialized } = useKeycloak();
 
   const { authenticated } = keycloak;
+  const {token} = props;
 
   useEffect(
     () => getPosts(),
@@ -17,19 +18,22 @@ const Posts = (props) => {
 
   const getPosts = async () => {
     console.log("Get posts...");
-    if (!authenticated) {
-      setPostList([]);
+
+    setPostList([]);
+
+    if (! initialized || !authenticated || ! token || token === "") {
+      return;
     }
 
     try {
-      console.log(
-        "Get posts from https://jsonplaceholder.typicode.com/users/1/posts"
-      );
+      // console.log(
+      //   "Get posts from https://jsonplaceholder.typicode.com/users/1/posts"
+      // );
       const response = await axios.get(
         "https://jsonplaceholder.typicode.com/users/1/posts"
       );
       const data = response.data;
-      console.log(data);
+      console.log('Data is:', data);
 
       setPostList(data);
     } catch (error) {
@@ -37,7 +41,12 @@ const Posts = (props) => {
     }
   };
 
+  console.log("initialized:", initialized, ", authenticated: ", authenticated);
   console.log("Posts: ", postList);
+
+  if (!authenticated) {
+    return <div>You don't have access to this page</div>;
+  }
 
   if (!postList || postList.length === 0) {
     return <div>No post was found.</div>;

@@ -1,5 +1,5 @@
 import { useKeycloak } from "@react-keycloak/web";
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Nav, Container, Row, Col } from "react-bootstrap";
 
@@ -12,36 +12,35 @@ const NavBar = (props) => {
   const { authenticated } = keycloak;
 
   const renderAuthLinks = () => {
-    console.log("Render auth links - authenticated: ", authenticated);
-   
-
+    console.log("Render auth links - initialized:", initialized, ", authenticated: ", authenticated);
+  
     if (authenticated) {
       return (
         <Row>
-          <Col>
-            <Nav.Item>
-              <Nav.Link eventKey="/" as="div">
+          <Col md={1} lg={1} xl={1}>
+            <Nav.Item style={{textAlign:"left"}}>
+              <Nav.Link eventKey="/" href="/" as="div">
                 <Link to="/">Home</Link>
               </Nav.Link>
             </Nav.Item>
           </Col>
-          <Col xl={5}>
-            <Nav.Item>
-              <Nav.Link eventKey="/posts" as="div" href="/posts">
+          <Col md={6} lg={6} xl={6}>
+            <Nav.Item style={{textAlign:"left"}}>
+              <Nav.Link eventKey="/posts" href="/posts" as="div">
                 <Link to="/posts">Posts</Link>
               </Nav.Link>
             </Nav.Item>
           </Col>
-          <Col>
+          <Col md={4} lg={3} xl={3}>
             <Nav.Item>
-              <Nav.Link eventKey="/logoff" as="div" href="#">
+              <Nav.Link eventKey="/logoff" href="#" as="div" disabled>
                 Welcome {user.name}
               </Nav.Link>
             </Nav.Item>
           </Col>
-          <Col>
+          <Col md={1} lg={2} xl={2}>
             <Nav.Item>
-              <Nav.Link eventKey="/logoff" as="div" href="#" onClick={logout}>
+              <Nav.Link eventKey="/logoff" href="#" onClick={logout}  as="div">
                 <Link to="/logoff">Logout</Link>
               </Nav.Link>
             </Nav.Item>
@@ -52,14 +51,14 @@ const NavBar = (props) => {
 
     return (
       <Row>
-        <Col xs={7}>
-          <Nav.Item>
+        <Col md={10} lg={10} xl={10}>
+          <Nav.Item style={{textAlign:"left"}}>
             <Nav.Link eventKey="/" as="div">
               <Link to="/">Home</Link>
             </Nav.Link>
           </Nav.Item>
         </Col>
-        <Col>
+        <Col md={2} lg={2} xl={2}>
           <Nav.Item>
             <Nav.Link eventKey="/login" as="div" href="/#" onClick={login}>
               <Link to="/login">Login</Link>
@@ -72,7 +71,6 @@ const NavBar = (props) => {
 
   const selectTab = (selectedKey) => {
     console.log("select tab ", selectedKey);
-    console.log("userInfo:", user);
     setSelectedTab(selectedKey);
   };
 
@@ -88,14 +86,19 @@ const NavBar = (props) => {
     await keycloak.logout();
   };
 
+  console.log("userInfo:", user);
+
   const links = renderAuthLinks();
 
   return (
     <Nav
-      variant="tabs"
+      // variant="tabs"
+      // fill
       defaultActiveKey="/"
       activeKey={selectedTab}
       onSelect={selectTab}
+      style={{backgroundColor:"cyan"}}
+      
     >
       <Container>
       {links}        

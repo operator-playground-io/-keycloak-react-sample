@@ -12,19 +12,12 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(undefined);
   const [user, setUser] = useState({});
 
-  const onAuthSuccess = (e) => {
-    console.log("onAuthSuccess: ", e);
-  };
-
-  const onAuthLogout = (e) => {
-    console.log("onAuthLogout: ", e);
-  };
-
   const onTokens = async (tokens) => {
-    console.log("tokens: ", tokens);
+    console.log("keycloak tokens: ", tokens);
+    // alert("keycloak tokens: "+ tokens);
 
     // keycloak.loadUserProfile()
     // .then(function(profile) {
@@ -33,9 +26,11 @@ function App() {
     //     alert('Failed to load user profile');
     // });
 
-    setToken(tokens ? tokens.token : "");
+    // console.log('Current token: ', token, ', new token: ', tokens.token);
 
-    if (tokens && tokens.token) {
+    if (tokens && tokens.token && tokens.token !== token ) {
+      setToken(tokens ? tokens.token : undefined);
+
       const profile = await keycloak.loadUserInfo();
       console.log("User profile:", profile);
       // alert(JSON.stringify(profile, null, "  "));
@@ -43,8 +38,9 @@ function App() {
     }
   };
 
-  const onEvent = (e) => {
-    console.log("onEvent: ", e);
+  const onEvent = (event, error) => {
+    console.log('onKeycloakEvent', event, (error ? error : ""));
+    // alert("onEvent: "+ event + (error ? error : ""));
   };
 
   return (
@@ -52,23 +48,25 @@ function App() {
       authClient={keycloak}
       initOptions={{ onLoad: "check-sso" }}
       onTokens={onTokens}
-      onAuthSuccess={onAuthSuccess}
-      onAuthLogout={onAuthLogout}
       onEvent={onEvent}
     >
       <BrowserRouter>
-          <Navbar user={user} />
-          <Container>
-          <Row style={{marginTop:'50px'}}>
+        <Navbar user={user} />
+        <Container>
+          <Row style={{ marginTop: "50px" }}>
             <Col>
               <Switch>
-                <Route exact path="/posts" render={(routeProps) => <Posts />} />
-                <Route exact path="/" render={Home} />
+                <Route
+                  exact
+                  path="/posts"
+                  render={(routeProps) => <Posts token={token} />}
+                />
+                <Route exact path="/" render={(routeProps) => <Home />} />
                 <Redirect to="/" />
               </Switch>
             </Col>
           </Row>
-          </Container>
+        </Container>
       </BrowserRouter>
     </ReactKeycloakProvider>
   );
