@@ -4,15 +4,9 @@ services:
     image: 'quay.io/keycloak/keycloak:12.0.2'
     environment:
       - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=andi
-      # - PROXY_ADDRESS_FORWARDING=true
-      # - KEYCLOAK_LOGLEVEL=DEBUG
-      # - ROOT_LOGLEVEL=DEBUG
-      # - DEBUG=true
+      - KEYCLOAK_PASSWORD=admin
     ports: 
       - '8080:8080'
-      # - '127.0.0.1:8080:8080'
-      # - '172.17.208.1:8080:8080'
   app:
     build: 
       dockerfile: Dockerfile
@@ -31,8 +25,3 @@ services:
       - REACT_APP_AUTH_CLIENT=vanilla
     ports: 
       - '3000:3000'
-
-networks: 
-  default:
-    external:
-      name: dockernet
